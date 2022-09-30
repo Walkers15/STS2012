@@ -80,7 +80,7 @@ def getDrawPlayerIndex(playerList) :
 	graphMode = int(graphMode)
 
 	drawPlayerIndex = []
-	
+
 	if (graphMode == 1):
 		drawPlayerIndex = [0, 1, 2, 3, 4]
 	elif (graphMode == 2):
@@ -89,14 +89,14 @@ def getDrawPlayerIndex(playerList) :
 		if (index1.isdigit() == False or index2.isdigit() == False):
 			print("잘못된 입력입니다. 프로그램을 종료합니다.")
 			sys.exit()
-		drawPlayerIndex = [index1, index2]
+		drawPlayerIndex = [index1 - 1, index2 - 1]
 	elif (graphMode == 3):
 		playerIndexStr = input('정보를 보고 싶은 선수의 번호를 입력하세요 : ')
 		if (playerIndexStr.isdigit() == False or (int(playerIndexStr) < 1 or int(playerIndexStr) > 20)):
 			print("잘못된 입력입니다. 프로그램을 종료합니다.")
 			sys.exit()
 		playerIndex = int(playerIndexStr)
-		drawPlayerIndex = [playerIndex]
+		drawPlayerIndex = [playerIndex - 1]
 	else:
 		print("잘못된 입력입니다. 프로그램을 종료합니다.")
 		sys.exit()
@@ -111,7 +111,6 @@ def getYearAndPlayerType ():
 
 	#회사 선택
 	year = input ('선수 정보를 볼 연도를 고르세요 (2012 ~ 2022) : ')
-	print(year + '!!!!')
 	if (year.isdigit() == False):
 		print("잘못된 입력입니다. 프로그램을 종료합니다.")
 		sys.exit()
