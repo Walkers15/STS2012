@@ -13,16 +13,18 @@ import json
 
 #외부 모듈
 from bs4 import *
-import matplotlib.pyplot as p
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 def parsePlayerData ( year, playerType ) :
-	"""네이버 KBO 자료실에서 해당 연도의 입력받은 타입에 대한 
+	"""네이버 KBO 자료실에서 해당 연도의 입력받은 타입에 대한
 	   입력: year: 정보를 가져올 연도, playerType: 투수 (1), 타자 (2)
 	   출력: 선수들 정보를 담은 list
 	"""
 
 	playerList = []
-	dataName = ['이름', '평균자책', '이닝수', '승률', '탈삼진', '피안타', '볼넷']
+	dataName = ['평균자책', '이닝수', '승률', '탈삼진', '피안타', '볼넷']
 
 	# Web 요청시 필요한 데이터 정리
 	type = 'pitcher'
@@ -89,7 +91,7 @@ def getDrawPlayerIndex(playerList) :
 		if (index1.isdigit() == False or index2.isdigit() == False):
 			print("잘못된 입력입니다. 프로그램을 종료합니다.")
 			sys.exit()
-		drawPlayerIndex = [index1 - 1, index2 - 1]
+		drawPlayerIndex = [int(index1) - 1, int(index2) - 1]
 	elif (graphMode == 3):
 		playerIndexStr = input('정보를 보고 싶은 선수의 번호를 입력하세요 : ')
 		if (playerIndexStr.isdigit() == False or (int(playerIndexStr) < 1 or int(playerIndexStr) > 20)):
@@ -100,7 +102,7 @@ def getDrawPlayerIndex(playerList) :
 	else:
 		print("잘못된 입력입니다. 프로그램을 종료합니다.")
 		sys.exit()
-	
+
 	return drawPlayerIndex
 
 def getYearAndPlayerType ():
@@ -136,6 +138,67 @@ def getYearAndPlayerType ():
 
 	return year, playerType
 
+def draw(list1, list2, list3) :
+	df = pd.DataFrame(list1)
+
+	minMax = list()
+	for i in range(len(list2)) :
+		divisor = round(df[i+1].max() - df[i+1].min(), 4)
+		minMax.append(divisor)
+
+	for i in range(len(list2)) :
+		df[i+1] = df[i+1].sub(df[i+1].min())
+		df[i+1] = df[i+1].div(minMax[i]).round(4)*5
+
+	if '평균자책' in list2:
+		for i in range(4, 6) : #역산이 필요한 값 변환
+			df[i] = 5 - df[i]
+
+	df[len(list1[0])] = df[1]
+
+
+	df = df.values.tolist()
+
+	if len(list3) == 5 :
+		plot5(df, list3, list2)
+	elif len(list3) == 1 :
+		plot1(df, list3, list2)
+	elif len(list3) == 2 :
+		plot2(df, list3, list2)
+
+def plot5(df, index, varList) :
+	grid = plt.GridSpec(2, 18, wspace=2)
+	loc = np.linspace(start=0, stop=2 * np.pi, num=len(varList)+1)
+	gridLoc = [grid[0, 0:5], grid[0, 6:11], grid[0, 12:17], grid[1, 3:8], grid[1, 9:14]]
+
+	for i in range(5) :
+		plt.subplot(gridLoc[i], polar=True)
+		fillPlot(loc, df, int(index[i]), varList)
+	plt.show()
+
+def fillPlot(loc, df, index, varList) :
+	varList = [*varList, varList[0]]
+	plt.plot(loc, df[index][1:], label=df[index][0])
+	plt.fill(loc, df[index][1:], alpha=0.7)
+	plt.ylim(0, 5)
+	plt.xticks(loc, labels=varList, fontsize=13)
+	plt.yticks([1, 2, 3, 4])
+	plt.title(df[index][0])
+
+def plot1(df, index, varList) :
+	loc = np.linspace(start=0, stop=2 * np.pi, num=len(varList)+1)
+	plt.subplot(polar=True)
+	fillPlot(loc, df, int(index[0]), varList)
+	plt.show()
+
+def plot2(df, index, varList) :
+	loc = np.linspace(start=0, stop=2 * np.pi, num=len(varList) + 1)
+	subplotList = [121, 122]
+	for i in range(2) :
+		plt.subplot(subplotList[i], polar=True)
+		fillPlot(loc, df, int(index[i]), varList)
+	plt.show()
+
 
 """***메인 프로그램: 주식 종가 추출 및 그리기***"""
 
@@ -144,10 +207,9 @@ year, playerType = getYearAndPlayerType() # 회사 선택
 playerList, dataName = parsePlayerData(year, playerType) # 종가 추출
 
 drawPlayerIndex = getDrawPlayerIndex(playerList)
-print(playerList)
-print(dataName)
-print(drawPlayerIndex)
-# drawGraph(pList) # 그리기
+#print(playerList)
+#print(dataName)
+#print(drawPlayerIndex)
+draw(playerList, dataName, drawPlayerIndex) # 그리기
 
 """ ***The End of Main*** """
-
