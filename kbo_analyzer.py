@@ -16,12 +16,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+#한글 깨짐 방지를 위한 코드 (해당 폰트가 없을 경우... 유감)
 if platform.system() == 'Windows' :
     plt.rc('font', family='NanumGothic')
 else :
     plt.rc('font', family='AppleGothic')
     plt.rcParams['axes.unicode_minus'] = False
 
+#고해상도 그림을 위한 dpi 설정
+plt.rcParams['figure.dpi'] = 600
 
 def parsePlayerData(year, playerType):
     """네이버 KBO 자료실에서 해당 연도의 입력받은 타입에 대한
@@ -30,7 +33,7 @@ def parsePlayerData(year, playerType):
 	"""
 
     playerList = []
-    dataName = ['평균자책', '이닝수', '승률', '탈삼진', '피안타', '볼넷']
+    dataName = ['평균\n자책', '이닝수', '승률', '탈삼진', '피안타', '볼넷']
 
     # Web 요청시 필요한 데이터 정리
     type = 'pitcher'
@@ -164,8 +167,8 @@ def draw(list1, list2, list3):
         df[i + 1] = df[i + 1].sub(df[i + 1].min())
         df[i + 1] = df[i + 1].div(minMax[i]).round(4) * 5
 
-    if '평균자책' in list2:
-        for i in range(4, 6):  # 역산이 필요한 값 변환
+    if '평균\n자책' in list2:
+        for i in [1, 5, 6]:  # 역산이 필요한 값 변환
             df[i] = 5 - df[i]
 
     df[len(list1[0])] = df[1]
@@ -181,9 +184,9 @@ def draw(list1, list2, list3):
 
 
 def plot5(df, index, varList):  # 5개 그리기
-    grid = plt.GridSpec(2, 18, wspace=2)
+    grid = plt.GridSpec(2, 22, wspace=0.5)
     loc = np.linspace(start=0, stop=2 * np.pi, num=len(varList) + 1)
-    gridLoc = [grid[0, 0:5], grid[0, 6:11], grid[0, 12:17], grid[1, 3:8], grid[1, 9:14]]
+    gridLoc = [grid[0, 0:5], grid[0, 8:13], grid[0, 16:21], grid[1, 4:9], grid[1, 12:17]] #겹치지 않게 간격 조정 완료
 
     for i in range(5):
         plt.subplot(gridLoc[i], polar=True)
@@ -196,7 +199,7 @@ def fillPlot(loc, df, index, varList):  # 개별 방사형 차트에 정보를 �
     plt.plot(loc, df[index][1:], label=df[index][0])
     plt.fill(loc, df[index][1:], alpha=0.7)
     plt.ylim(0, 5)
-    plt.xticks(loc, labels=varList, fontsize=13)
+    plt.xticks(loc, labels=varList, fontsize=9)
     plt.yticks([1, 2, 3, 4])
     plt.title(df[index][0])
 
@@ -214,6 +217,7 @@ def plot2(df, index, varList):  # 2개 그리기
     for i in range(2):
         plt.subplot(subplotList[i], polar=True)
         fillPlot(loc, df, int(index[i]), varList)
+    plt.subplots_adjust(wspace=0.5) # 두개가 겹치는것 방지 (wspace는 subplot사이의 간격을 조정함)
     plt.show()
 
 
