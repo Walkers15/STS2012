@@ -8,12 +8,19 @@
 from urllib.request import *
 import sys
 import json
+import platform
 
 # 외부 모듈
 from bs4 import *
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+if platform.system() == 'Windows' :
+    plt.rc('font', family='NanumGothic')
+else :
+    plt.rc('font', family='AppleGothic')
+    plt.rcParams['axes.unicode_minus'] = False
 
 
 def parsePlayerData(year, playerType):
