@@ -18,7 +18,7 @@ import pandas as pd
 
 #한글 깨짐 방지를 위한 코드 (해당 폰트가 없을 경우... 유감)
 if platform.system() == 'Windows' :
-    plt.rc('font', family='NanumGothic')
+    plt.rc('font', family='Malgun Gothic')
 else :
     plt.rc('font', family='AppleGothic')
     plt.rcParams['axes.unicode_minus'] = False
