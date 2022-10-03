@@ -5,10 +5,8 @@
 """
 
 # 내장 모듈
-from curses.ascii import isdigit
 from urllib.request import *
 import sys
-import time
 import json
 
 # 외부 모듈
