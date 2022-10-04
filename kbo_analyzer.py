@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-#한글 깨짐 방지를 위한 코드 (해당 폰트가 없을 경우... 유감)
+#한글 깨짐 방지를 위한 코드 (해당 폰트가 없을 경우...? 유감)
 if platform.system() == 'Windows' :
     plt.rc('font', family='Malgun Gothic')
 else :
