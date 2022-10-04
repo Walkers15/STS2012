@@ -23,9 +23,6 @@ else :
     plt.rc('font', family='AppleGothic')
     plt.rcParams['axes.unicode_minus'] = False
 
-#고해상도 그림을 위한 dpi 설정
-plt.rcParams['figure.dpi'] = 600
-
 def parsePlayerData(year, playerType):
     """네이버 KBO 자료실에서 해당 연도의 입력받은 타입에 대한
 	   입력: year: 정보를 가져올 연도, playerType: 투수 (1), 타자 (2)
